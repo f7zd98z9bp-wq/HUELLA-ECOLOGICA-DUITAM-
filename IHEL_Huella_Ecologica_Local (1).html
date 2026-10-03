@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IHEL - Huella Ecológica Local</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef4ef;color:#20352a}
+.container{max-width:760px;margin:30px auto;padding:20px}
+.card{background:white;border-radius:22px;padding:30px;box-shadow:0 8px 30px rgba(0,0,0,.10)}
+h1{text-align:center;margin:5px 0;color:#24553b;font-size:30px}
+.subtitle{text-align:center;color:#66776d;margin-bottom:25px}
+.intro{background:#edf6ef;border-left:5px solid #4f8a62;padding:15px;border-radius:10px;line-height:1.5}
+label{font-weight:bold;display:block;margin:22px 0 8px}
+input,select{width:100%;padding:13px;border:1px solid #cbd8ce;border-radius:10px;font-size:15px;background:white}
+button{width:100%;margin-top:25px;padding:15px;border:0;border-radius:12px;background:#2f7048;color:white;font-size:17px;font-weight:bold;cursor:pointer}
+button:hover{background:#245a39}
+.result{display:none;margin-top:25px;padding:25px;border-radius:16px;text-align:center}
+.score{font-size:48px;font-weight:bold;margin:10px}
+.badge{display:inline-block;padding:9px 18px;border-radius:30px;font-weight:bold}
+.small{font-size:13px;color:#6b776f;line-height:1.5;margin-top:20px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container"><div class="card">
+<h1>🌱 Huella Ecológica Local</h1>
+<div class="subtitle">IHEL – Índice de Huella Ecológica Local</div>
+<div class="intro">Responde las siguientes preguntas según tus hábitos habituales. La herramienta genera una valoración educativa de tu presión ambiental en seis dimensiones.</div>
+
+<label>Nombre (opcional)</label>
+<input id="nombre" placeholder="Escribe tu nombre">
+
+<label>1. Alimentación: ¿con qué frecuencia consumes carne?</label>
+<select id="a"><option value="1">1 – Casi nunca</option><option value="2">2 – Ocasionalmente</option><option value="3" selected>3 – Algunas veces por semana</option><option value="4">4 – Frecuentemente</option><option value="5">5 – Todos o casi todos los días</option></select>
+
+<label>2. Movilidad: ¿qué medio utilizas con mayor frecuencia?</label>
+<select id="m"><option value="1">1 – Caminar o bicicleta</option><option value="2">2 – Transporte público</option><option value="3" selected>3 – Combinación de medios</option><option value="4">4 – Motocicleta</option><option value="5">5 – Automóvil particular</option></select>
+
+<label>3. Energía: ¿cómo consideras tu consumo de energía en el hogar?</label>
+<select id="e"><option value="1">1 – Muy bajo</option><option value="2">2 – Bajo</option><option value="3" selected>3 – Moderado</option><option value="4">4 – Alto</option><option value="5">5 – Muy alto</option></select>
+
+<label>4. Agua: ¿cómo consideras tu consumo de agua?</label>
+<select id="w"><option value="1">1 – Muy responsable</option><option value="2">2 – Responsable</option><option value="3" selected>3 – Moderado</option><option value="4">4 – Alto</option><option value="5">5 – Muy alto</option></select>
+
+<label>5. Consumo: ¿con qué frecuencia compras productos que no son indispensables?</label>
+<select id="c"><option value="1">1 – Casi nunca</option><option value="2">2 – Ocasionalmente</option><option value="3" selected>3 – Algunas veces</option><option value="4">4 – Frecuentemente</option><option value="5">5 – Muy frecuentemente</option></select>
+
+<label>6. Residuos: ¿cómo manejas los residuos que produces?</label>
+<select id="r"><option value="1">1 – Separo y reutilizo/reciclo</option><option value="2">2 – Separo frecuentemente</option><option value="3" selected>3 – Algunas veces separo</option><option value="4">4 – Rara vez separo</option><option value="5">5 – No separo</option></select>
+
+<button onclick="calcular()">CALCULAR MI HUELLA ECOLÓGICA</button>
+<div id="resultado" class="result"></div>
+<div class="small"><b>Nota metodológica:</b> El IHEL es una herramienta académica y educativa diseñada para aproximar la presión ambiental a partir de hábitos y no constituye una medición oficial de huella ecológica municipal.</div>
+</div></div>
+
+<script>
+function calcular(){
+ const vals=['a','m','e','w','c','r'].map(x=>Number(document.getElementById(x).value));
+ const names=['Alimentación','Movilidad','Energía','Agua','Consumo','Residuos'];
+ const total=vals.reduce((a,b)=>a+b,0);
+ let nivel, msg, bg;
+ if(total<=12){nivel='HUELLA BAJA';msg='Tus hábitos presentan una presión ambiental relativamente baja.';bg='#dff2e3'}
+ else if(total<=20){nivel='HUELLA MODERADA';msg='Existe margen para reducir tu presión sobre los recursos naturales.';bg='#fff4c7'}
+ else if(total<=25){nivel='HUELLA ALTA';msg='Tus hábitos muestran una presión ambiental importante. Hay varias oportunidades de reducción.';bg='#ffe2bd'}
+ else{nivel='HUELLA MUY ALTA';msg='El resultado indica una presión ambiental elevada y requiere cambios importantes en los hábitos de consumo.';bg='#ffd8d8'}
+ const max=Math.max(...vals), idx=vals.indexOf(max);
+ const nombre=document.getElementById('nombre').value.trim();
+ const div=document.getElementById('resultado');
+ div.style.display='block';div.style.background=bg;
+ div.innerHTML=`<div>Resultado${nombre?', '+nombre:''}</div><div class="score">${total}/30</div><div class="badge">${nivel}</div><p>${msg}</p><p><b>Mayor presión identificada:</b> ${names[idx]} (${max}/5)</p><p>La dimensión con mayor puntuación representa el principal aspecto que podrías revisar para disminuir tu huella ecológica.</p>`;
+ div.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body></html>
